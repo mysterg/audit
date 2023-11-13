@@ -102,6 +102,13 @@ main() {
     check_debian_sources
     check_apt_periodic_settings
 
+    check_apt_upgradable_packages
+    check_held_packages
+    check_snap_updates
+
+    check_for_prohibited_media_files
+
+    check_unwanted_software
 
     finalize_report
     echo "Audit completed. Report saved to $REPORT_FILE"

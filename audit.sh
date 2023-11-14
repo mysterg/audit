@@ -41,10 +41,20 @@ import_sections() {
 # Function to Write the Head, Title, and Open Body Section
 init_report() {
     rm $REPORT_FILE
-    echo "<html><head><title>Linux Security Audit Report</title></head><body>" > "$REPORT_FILE"
+    echo "<html><head><style>.collapsible-content { margin: 10px 0; overflow: hidden; transition: max-height 0.2s ease-out; }</style><title>Linux Security Audit Report</title></head><body>" > "$REPORT_FILE"
     echo "<h1>Linux Security Audit Report</h1>" >> "$REPORT_FILE"
     echo "<p><strong>Date:</strong> $(date)</p>" >> "$REPORT_FILE"
     echo "<p><strong>Distribution:</strong> $DIST, <strong>Codename:</strong> $CODENAME, <strong>Release:</strong> $RELEASE</p>" >> "$REPORT_FILE"
+}
+
+start_collapsible_section() {
+    local audit_section="$1"
+    echo "<h2>$audit_section</h2>" >> "$REPORT_FILE"
+    echo "<div class='collapsible-content'>" >> "$REPORT_FILE"
+}
+
+end_collapsible_section() {
+    echo "</div>" >> "$REPORT_FILE"
 }
 
 # Function to Write the Output of Each Audit to the Body Section
@@ -69,17 +79,22 @@ main() {
     init_report
 
     # Call functions from imported sections here
+    start_collapsible_section "Forensic Questions"
 	check_forensic_question 1
 	check_forensic_question 2
 	check_forensic_question 3
+    end_collapsible_section
 	
+    start_collapsible_section "User Auditing"
 	find_bash_users
 	find_sudo_users
 	check_unencrypted_passwords
 	check_password_never_expires
 	check_non_root_uid0_users
 	check_low_id_users_with_shells
+    end_collapsible_section
 	
+    start_collapsible_section "Local Policy"
 	check_pass_max_days
 	check_pass_min_days
 	check_pam_cracklib
@@ -88,27 +103,51 @@ main() {
 	check_pwquality_minlen
     check_blank_passwords_permitted
     check_password_lockout_policy
+    end_collapsible_section
 
+    start_collapsible_section "Defensive Countermeasure"
     check_ufw_status
     check_clamav_status
+    end_collapsible_section
 
+    start_collapsible_section "Uncategorized OS"
     check_etc_shadow_permissions
     check_etc_passwd_permissions
     check_grub_cfg_permissions_and_owner
+    end_collapsible_section
 
+    start_collapsible_section "Service Auditing"
     check_unsafe_running_services
+    end_collapsible_section
 
+    start_collapsible_section "OS Update"
     check_ubuntu_sources
     check_debian_sources
     check_apt_periodic_settings
+    end_collapsible_section
 
+    start_collapsible_section "Application Update"
     check_apt_upgradable_packages
     check_held_packages
     check_snap_updates
+    end_collapsible_section
 
+    start_collapsible_section "Prohibited File"
     check_for_prohibited_media_files
+    end_collapsible_section
 
+    start_collapsible_section "Unwanted Software"
     check_unwanted_software
+    end_collapsible_section
+
+    start_collapsible_section "Malware"
+    report_listening_services
+    check_rkhunter
+    end_collapsible_section
+
+    start_collapsible_section "Application Security"
+    check_sshd_config
+    end_collapsible_section
 
     finalize_report
     echo "Audit completed. Report saved to $REPORT_FILE"

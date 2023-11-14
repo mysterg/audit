@@ -97,7 +97,7 @@ main() {
     start_collapsible_section "Local Policy"
 	check_pass_max_days
 	check_pass_min_days
-	check_pam_cracklib
+	check_libpam_pwquality
 	check_password_encryption
 	check_password_remember
 	check_pwquality_minlen

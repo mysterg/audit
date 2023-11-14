@@ -23,10 +23,10 @@ check_pass_min_days() {
     # No action is taken if the setting is within the recommended range
 }
 
-check_pam_cracklib() {
+check_libpam_pwquality() {
     if command -v dpkg &> /dev/null; then
-        if ! dpkg -l | grep -qw pam-cracklib; then
-            write_audit_report "Account Policy" "pam-cracklib package is not installed"
+        if ! dpkg -l | grep -qw libpam-pwquality; then
+            write_audit_report "Account Policy" "libpam-pwquality package is not installed"
         fi
     fi
     # No action is taken if the package is installed or if the system is not Debian-based
